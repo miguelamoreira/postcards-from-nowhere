@@ -1,0 +1,210 @@
+/** @import must precede all other statements */
+@import url("https://fonts.googleapis.com/css2?family=Neuton:wght@400;700&family=Roboto+Mono:wght@400;700&family=Neucha&display=swap");
+
+@import 'tailwindcss';
+
+@import "tailwindcss/preflight"
+@tailwind utilities;
+
+/* ---------- Variables ---------- */
+:root {
+  --background: 0 0% 25%;
+  --foreground: 39 32% 91%;
+  --card: 39 32% 91%;
+  --card-foreground: 222 10% 14%;
+  --popover: 35 19% 70%;
+  --popover-foreground: 222 10% 14%;
+  --primary: 29 42% 43%;
+  --primary-foreground: 39 32% 91%;
+  --secondary: 39 33% 67%;
+  --secondary-foreground: 222 10% 14%;
+  --muted: 0 0% 25%;
+  --muted-foreground: 39 32% 91%;
+  --accent: 39 33% 67%;
+  --accent-foreground: 39 32% 91%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 39 32% 91%;
+  --border: 39 33% 67%;
+  --input: 35 19% 70%;
+  --ring: 29 42% 43%;
+  --radius: 0.25rem;
+}
+
+#root {
+  width: 90%;
+  max-width: none !important;
+}
+
+/* ---------- Base Styles ---------- */
+@layer base {
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: "Roboto Mono", monospace;
+    margin: 0;
+  }
+
+  :where(p, span, li, h1, h2, h3, h4, h5, h6, a, button, label, td, th) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  pre,
+  code {
+    overflow-x: auto;
+    white-space: pre;
+  }
+}
+
+/* ---------- Components ---------- */
+@layer components {
+  h1 {
+    font-family: 'Neuton', 'serif';
+  }
+
+  .btn-primary {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 1rem;
+    font-family: "Roboto Mono", monospace;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: hsl(var(--foreground));
+  }
+
+  .btn-primary::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    top: 0.375rem;
+    background-color: #9A6E42; /* brown */
+    z-index: -1;
+  }
+
+  .btn-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: #9A6E42;
+    transition: transform 0.2s, background-color 0.2s;
+    z-index: -2;
+  }
+
+  .btn-primary:hover::after {
+    background-color: #563824; /* brown-dark */
+  }
+
+  .btn-primary:active::after {
+    background-color: #2E1D15; /* brown-darker */
+    transform: translateY(0.375rem);
+  }
+
+  .btn-secondary {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 1rem;
+    font-family: "Roboto Mono", monospace;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: hsl(var(--foreground));
+  }
+
+  .btn-secondary::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    top: 0.375rem;
+    background-color: #E9B361; /* gold */
+    z-index: -1;
+  }
+
+  .btn-secondary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: #E9B361;
+    transition: transform 0.2s, background-color 0.2s;
+    z-index: -2;
+  }
+
+  .btn-secondary:hover::after {
+    background-color: #C99455; /* gold-dark */
+  }
+
+  .btn-secondary:active::after {
+    background-color: #9A6E42; /* brown */
+    transform: translateY(0.375rem);
+  }
+
+  .postcard-shadow {
+    filter: blur(0.75px);
+  }
+
+  .username-modal {
+    background-image: url("./assets/bg/modals.svg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 0.25rem;
+  }
+
+  .username-input {
+    border-radius: 0.25rem;
+    background-color: #ede8de;
+    display: flex;
+    align-items: center;
+    padding: 2rem;
+    text-align: left;
+    font-size: 16px;
+    color: rgba(33, 34, 39, 0.4);
+  }
+
+  .postcard-lg p {
+    color: #21222795;
+  }
+
+  @media (max-width: 1024px) {
+    .postcard-surface {
+      height: 58vh !important;
+      aspect-ratio: unset !important;
+    }
+  }
+  @media (max-width: 640px) {
+    .postcard-surface {
+      height: 62vh !important;
+      aspect-ratio: unset !important;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .postcard-stamp {
+      top: 16px !important;
+      right: 16px !important;
+      width: 64px !important;
+      height: 64px !important;
+    }
+    .postcard-right {
+      padding-left: 0 !important;
+      align-items: center !important;
+      text-align: center !important;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .postcard-stamp {
+      top: 12px !important;
+      right: 12px !important;
+      width: 54px !important;
+      height: 54px !important;
+    }
+    .postcard-right {
+      padding-left: 0 !important;
+      align-items: center !important;
+      text-align: center !important;
+    }
+  }
+}
