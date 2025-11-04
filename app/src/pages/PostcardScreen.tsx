@@ -192,14 +192,13 @@ export default function PostcardScreen() {
                     location={currentPostcard.postmarked || ""}
                     text={currentPostcard.message}
                     showFlip={false}
-                    hideActions
                     onFlip={() => {}}
                     onContinue={() => {}}
                     />
                 </div>
 
                 <div ref={backSurfaceRef}>
-                    <PostcardFront showFlip={false} hideActions onFlip={() => {}} onContinue={() => {}} />
+                    <PostcardFront showFlip={false} onFlip={() => {}} onContinue={() => {}} />
                 </div>
                 </div>
 
@@ -232,14 +231,13 @@ export default function PostcardScreen() {
                             location={currentPostcard.postmarked || ""}
                             text={currentPostcard.message}
                             showFlip={false}
-                            hideActions
                             onFlip={() => {}}
                             onContinue={() => {}}
                             />
                         </div>
 
                         <div style={backFaceStyle} className="pc-face-back">
-                            <PostcardFront showFlip={false} hideActions onFlip={() => {}} onContinue={() => {}} />
+                            <PostcardFront showFlip={false} onFlip={() => {}} onContinue={() => {}} />
                         </div>
 
                         {reduceMotion && (
