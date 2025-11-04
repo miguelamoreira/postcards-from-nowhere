@@ -5,10 +5,9 @@ interface PostcardFrontProps {
     showFlip?: boolean;
     onFlip?: () => void;
     onContinue: () => void;
-    isFlipped?: boolean
 }
 
-export default function PostcardFront({ postcardBg = "../assets/bg/postcard.svg", showFlip = false, onFlip, onContinue}: PostcardFrontProps) {
+export default function PostcardFront({ postcardBg = "../assets/bg/postcard.svg", showFlip = false, onFlip, onContinue }: PostcardFrontProps) {
     return (
         <>
             <div
@@ -25,15 +24,6 @@ export default function PostcardFront({ postcardBg = "../assets/bg/postcard.svg"
                         Illustration area
                     </div>
                 </div>
-            </div>
-        
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10">
-                {showFlip && (
-                    <Button onClick={onFlip} variant="secondary" text="Flip postcard" />
-                )}
-                {onContinue && (
-                    <Button text="Continue" onClick={onContinue} variant="primary" />
-                )}
             </div>
         </>
     )

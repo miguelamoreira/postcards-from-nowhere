@@ -8,7 +8,7 @@ interface PostcardBackProps {
     stampSrc?: string;
     showFlip?: boolean;
     onFlip?: () => void;
-    onContinue?: () => void
+    onContinue?: () => void;
 }
 
 export default function PostcardBack({ userName, location = "-", text = "", postcardBg = "../assets/bg/postcard.svg", stampSrc = "/assets/stamp.svg", showFlip = false, onFlip, onContinue }: PostcardBackProps) {
@@ -155,16 +155,7 @@ export default function PostcardBack({ userName, location = "-", text = "", post
                         </div>
                     </div>
                 </div>
-            
-            {/* actions */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10">
-                {showFlip && (
-                    <Button onClick={onFlip} variant="secondary" text="Flip postcard" />
-                )}
-                {onContinue && (
-                    <Button onClick={onContinue} variant="primary" text="Continue" />
-                )}
-            </div>
+        
         </>
     )
 }
