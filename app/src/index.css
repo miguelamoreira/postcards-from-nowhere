@@ -207,4 +207,59 @@
       text-align: center !important;
     }
   }
+
+  .reveal-container {
+    position: relative;
+    --reveal-x: 50%;
+    --reveal-y: 50%;
+    transition: mask 0.3s ease;
+    overflow: hidden;
+  }
+
+  /* -------- INVISIBLE INK -------- */
+  .effect-ink p {
+    color: transparent;
+    transition: color 0.4s ease;
+    background: linear-gradient(90deg, #404040 0%, #404040 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+  }
+  .effect-ink {
+    mask-image: radial-gradient(circle 90px at var(--reveal-x) var(--reveal-y), white 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle 90px at var(--reveal-x) var(--reveal-y), white 40%, transparent 100%);
+  }
+  .effect-ink.is-revealed {
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  /* === HEAT EFFECT === */
+  .effect-heat p {
+    color: #b33d00;
+    opacity: 0;
+    transition: opacity 1s ease-out, text-shadow 1s ease-out;
+    text-shadow: none;
+  }
+
+  .effect-heat.reveal-container:hover p {
+    opacity: 1;
+    text-shadow: 0 0 8px rgba(255, 120, 0, 0.35);
+  }
+
+  .effect-heat.reveal-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle 160px at var(--reveal-x) var(--reveal-y),
+      rgba(255, 150, 0, 0.2) 0%,
+      rgba(255, 150, 0, 0) 60%
+    );
+    pointer-events: none;
+    transition: all 0.2s ease;
+    opacity: 0.3;
+  }
+  .effect-heat.reveal-container:hover::before {
+    opacity: 0.6;
+  }
 }

@@ -1,4 +1,5 @@
 import Button from "./Button";
+import { useState, useRef, useEffect, useMemo } from "react";
 
 interface PostcardBackProps {
     userName?: string;
@@ -13,6 +14,29 @@ interface PostcardBackProps {
 
 export default function PostcardBack({ userName, location = "-", text = "", postcardBg = "../assets/bg/postcard.svg", stampSrc = "/assets/stamp.svg", showFlip = false, onFlip, onContinue }: PostcardBackProps) {
     const textLines = (text || "").split("\n")
+
+    const effects = ["effect-ink", "effect-heat"];
+
+    const postcardEffect = useMemo(() => {
+        const seed = (location?.length ?? 0) + (postcardBg?.length ?? 0);
+        return effects[seed % effects.length];
+    }, [location, postcardBg]);
+
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [isTouchReveal, setIsTouchReveal] = useState(false);
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        const rect = containerRef.current?.getBoundingClientRect();
+        if (!rect) return;
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        containerRef.current?.style.setProperty("--reveal-x", `${x}%`);
+        containerRef.current?.style.setProperty("--reveal-y", `${y}%`);
+    };
+
+    const handleTouchStart = () => {
+        setIsTouchReveal(true);
+    };
 
     return (
         <>
@@ -92,26 +116,41 @@ export default function PostcardBack({ userName, location = "-", text = "", post
                                 paddingBottom: 6,
                             }}
                         >
-                            <div className="mt-1 space-y-3 sm:space-y-4">
-                                {textLines.map((line, i) => (
-                                    <div key={i}>
-                                        {line ? (
-                                            <p
-                                                className="text-justify text-[#404040]/95 wrap-break-word"
-                                                style={{
-                                                    fontFamily: "Neucha, cursive",
-                                                    fontSize: "clamp(15px, 1.6vw, 20px)",
-                                                    lineHeight: "2.3",
-                                                }}
-                                            >
-                                                {line}
-                                            </p>
-                                        ) : (
-                                            <div className="h-3" />
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
+                            
+                    <div
+              className="flex-1 pr-4 overflow-y-auto"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to bottom, rgba(0,0,0,0.16) 1px, rgba(0,0,0,0) 1px)",
+                backgroundSize: "100% 44px",
+                paddingTop: 6,
+                paddingBottom: 6,
+              }}
+            >
+              <div
+                ref={containerRef}
+                onMouseMove={handleMouseMove}
+                onTouchStart={handleTouchStart}
+                className={`mt-1 space-y-3 sm:space-y-4 reveal-container ${postcardEffect} ${
+                  isTouchReveal ? "is-revealed" : ""
+                }`}
+              >
+                {textLines.map((line, i) => (
+                  <p
+                    key={i}
+                    className="text-justify text-[#404040]/95 wrap-break-word"
+                    style={{
+                      fontFamily: "Neucha, cursive",
+                      fontSize: "clamp(15px, 1.6vw, 20px)",
+                      lineHeight: "2.3",
+                    }}
+                  >
+                    {line}
+                  </p>
+                ))}
+              </div>
+            </div>
+
                         </div>
                     </div>
             
