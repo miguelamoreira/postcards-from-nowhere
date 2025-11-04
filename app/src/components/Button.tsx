@@ -45,7 +45,7 @@ export default function Button({ text, onClick, variant="primary", state="defaul
         <button 
             onClick={isDisabled ? undefined : onClick}
             disabled={isDisabled}
-            className="px-8 py-3 text-lg font-monospace transition-all"
+            className="px-8 py-3 text-lg font-monospace transition-all point-cursor"
             style={{
                 backgroundImage,
                 backgroundSize: "cover",

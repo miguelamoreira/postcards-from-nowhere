@@ -170,7 +170,7 @@ export default function ChoicesDisplay({ title, subtitle, choices, initialSelect
                     className={
                         "flex items-center gap-8" + 
                         "transform transition-opacity transition-transform duration-700 ease-out " +
-                        (buttonsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4")
+                        (buttonsVisible ? "opacity-100 translate-y-0 gap-6" : "opacity-0 translate-y-4")
                     }
                     aria-hidden={!buttonsVisible}
                 >
