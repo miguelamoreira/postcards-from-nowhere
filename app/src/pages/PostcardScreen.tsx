@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
-import Postcard from "../components/Postcard";
+import PostcardFront from "../components/PostcardFront";
+import PostcardBack from "../components/PostcardBack";
 import TransitionDisplay from "../components/TransitionDisplay"
 import ChoicesDisplay, { Choice } from "../components/ChoicesDisplay";
 import { getPostcardById, postcardFlow, houseChoices, cityChoices, shoreChoices } from "../data/postcards";
@@ -106,15 +107,24 @@ export default function PostcardScreen() {
 
     return (
         <div className="min-h-screen bg-[#404040] flex flex-col items-center justify-center px-4 sm:px-8 relative overflow-hidden">
-            <Postcard
-                userName={userName}
-                location={currentPostcard.postmarked || ""}
-                text={currentPostcard.message}
-                showFlip={currentId !== "first"}
-                isFlipped={isFlipped}
-                onFlip={() => setIsFlipped((prev) => !prev)}
-                onContinue={handleContinue}
-            />
+            <div className="w-full max-w-6xl mx-auto px-4 sm:px-8 space-y-10 sm:space-y-14">
+                {isFlipped ? (
+                <PostcardFront
+                    showFlip={currentId !== "first"}
+                    onFlip={() => setIsFlipped((prev) => !prev)}
+                    onContinue={handleContinue}
+                />
+                ) : (
+                <PostcardBack
+                    userName={userName}
+                    location={currentPostcard.postmarked || ""}
+                    text={currentPostcard.message}
+                    showFlip={currentId !== "first"}
+                    onFlip={() => setIsFlipped((prev) => !prev)}
+                    onContinue={handleContinue}
+                />
+                )}
+            </div>
 
             {transitionTarget && (
                 <TransitionDisplay 
