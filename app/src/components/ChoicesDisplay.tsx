@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Button from "./Button";
-
+import { motion, Variants, useReducedMotion } from "motion/react";
 export interface Choice {
     id: string;
     postcardId: string;
@@ -21,6 +21,48 @@ interface ChoicesDisplayProps {
 export default function ChoicesDisplay({ title, subtitle, choices, initialSelectedId = null, onSelect, onCancel }: ChoicesDisplayProps) {
     const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId)
 
+    const [titleVisible, setTitleVisible] = useState(false)
+    const [subtitleVisible, setSubtitleVisible] = useState(false)
+    const [tilesVisible, setTilesVisible] = useState(false)
+    const [buttonsVisible, setButtonsVisible] = useState(false)
+    const reduceMotion = useReducedMotion();
+    const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+    useEffect(() => {
+        timeoutsRef.current.forEach((t) => clearTimeout(t));
+        timeoutsRef.current = [];
+
+        if (reduceMotion) {
+            setTitleVisible(true);
+            setSubtitleVisible(true);
+            setTilesVisible(true)
+            setButtonsVisible(true);
+        } else {
+            setTitleVisible(false);
+            setSubtitleVisible(false);
+            setTilesVisible(false)
+            setButtonsVisible(false);
+
+            timeoutsRef.current.push(
+                window.setTimeout(() => setTitleVisible(true), 350)
+            );
+            timeoutsRef.current.push(
+                window.setTimeout(() => setSubtitleVisible(true), 800)
+            );
+            timeoutsRef.current.push(
+                window.setTimeout(() => setTilesVisible(true), 1200)
+            );
+            timeoutsRef.current.push(
+                window.setTimeout(() => setButtonsVisible(true), 1600)
+            );
+        }
+
+        return () => {
+            timeoutsRef.current.forEach((t) => clearTimeout(t));
+            timeoutsRef.current = [];
+        };
+    }, [reduceMotion]);
+
     const handleCardClick = (id: string) => {
         setSelectedId((prev) => (prev === id ? null : id))
     }
@@ -36,10 +78,26 @@ export default function ChoicesDisplay({ title, subtitle, choices, initialSelect
     return (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-start pt-20 px-6 sm:px-12 bg-[#404040] text-[#EDE8DE] overflow-auto">
             <div className="max-w-4xl w-full text-center mb-10">
-                <h1 className="font-serif text-5xl sm:text-6xl tracking-wider leading-tight" style={{ fontFamily: 'Neuton' }}>
+                <h1 
+                    className={
+                        "font-serif text-5xl sm:text-6xl tracking-wider leading-tight" + 
+                        "transform transition-opacity transition-transform duration-700 ease-out " +
+                        (titleVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4")
+                    }
+                    style={{ fontFamily: 'Neuton' }}
+                    aria-hidden={!titleVisible}
+                >
                     {title}
                 </h1>
-                {subtitle && <p className="mt-6 text-lg sm:text-base text-[#EDE8DE]/70">{subtitle}</p>}
+                {subtitle && <p 
+                    className={
+                        "mt-6 text-lg text-[#EDE8DE]/70" +
+                        "transform transition-opacity transition-transform duration-700 ease-out " +
+                        (subtitleVisible ? "opacity-60 translate-y-0" : "opacity-0 translate-y-4")
+                    }
+                    aria-hidden={!subtitleVisible}
+                >{subtitle}
+                </p>}
             </div>
 
             <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-12 mt-6">
@@ -56,8 +114,13 @@ export default function ChoicesDisplay({ title, subtitle, choices, initialSelect
                                     handleCardClick(c.id);
                                     }
                                 }}
-                                className="focus:outline-none"
+                                className={
+                                    "focus:outline-none" +
+                                    "transform transition-opacity transition-transform duration-700 ease-out " +
+                                    (tilesVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4")
+                                }
                                 aria-pressed={isSelected}
+                                aria-hidden={!tilesVisible}
                                 style={{ width: "100%", maxWidth: 520 }}
                             >
                                 <div
@@ -103,7 +166,14 @@ export default function ChoicesDisplay({ title, subtitle, choices, initialSelect
             </div>
             
             <div className="w-full max-w-6xl flex items-center justify-center my-16">
-                <div className="flex items-center gap-8">
+                <div 
+                    className={
+                        "flex items-center gap-8" + 
+                        "transform transition-opacity transition-transform duration-700 ease-out " +
+                        (buttonsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4")
+                    }
+                    aria-hidden={!buttonsVisible}
+                >
                     {onCancel && (
                         <Button
                             text={"Cancel"}
