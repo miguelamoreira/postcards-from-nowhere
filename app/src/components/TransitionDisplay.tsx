@@ -52,10 +52,7 @@ export default function TransitionDisplay({ title, subtitle, onDone }: Transitio
     return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-[#3A3A3A] text-[#EDE8DE]"
-            onClick={onDone}
-            role="button"
             tabIndex={0}
-            onKeyDown={handleKeyDown}
         >
             <div className="text-center px-6 flex flex-col items-center gap-8 sm:gap-10">
                 <h1 
