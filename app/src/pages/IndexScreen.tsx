@@ -204,8 +204,8 @@ export default function Index() {
                         exit="exit"
                     >
                         <div className="space-y-6 mb-8 text-center">
-                            <h2 className="font-mono text-l sm:text-xl font-bold text-[#404040]">Who are the postcards addressed to?</h2>
-                            <p className="font-mono text-sm sm:text-base text-[#404040]/80">The postcards will remember this name</p>
+                            <h2 className="font-mono text-l sm:text-xl font-bold text-[#EDE8DE]">Who are the postcards addressed to?</h2>
+                            <p className="font-mono text-sm sm:text-base text-[#EDE8DE]/80">The postcards will remember this name</p>
                         </div>
 
                         <input

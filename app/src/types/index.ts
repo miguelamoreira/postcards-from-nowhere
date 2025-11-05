@@ -10,6 +10,7 @@ export interface Postcard {
     illustration: string;
     transitionLabel?: string;
     choiceLabel?: string;
+    image?: string;
 }
 
 export interface AppState {

@@ -1,4 +1,3 @@
-import Button from "./Button";
 import { useState, useRef, useEffect, useMemo } from "react";
 
 interface PostcardBackProps {
@@ -8,11 +7,10 @@ interface PostcardBackProps {
     postcardBg?: string;
     stampSrc?: string;
     showFlip?: boolean;
-    onFlip?: () => void;
-    onContinue?: () => void;
+    portrait?: boolean
 }
 
-export default function PostcardBack({ userName, location = "-", text = "", postcardBg = "../assets/bg/postcard.svg", stampSrc = "/assets/stamp.svg", showFlip = false, onFlip, onContinue }: PostcardBackProps) {
+export default function PostcardBack({ userName, location = "-", text = "", postcardBg = "../assets/bg/postcard.svg", stampSrc = "/assets/stamp.svg", showFlip = false, portrait }: PostcardBackProps) {
     const textLines = (text || "").split("\n")
 
     const effects = ["effect-ink", "effect-heat"];
@@ -105,8 +103,8 @@ export default function PostcardBack({ userName, location = "-", text = "", post
                                 To: <span className="font-normal">{userName || "User Name"}</span>
                             </p>
                         </div>
-            
-                        <div
+                            
+                    <div
                             className="flex-1 pr-4 overflow-y-auto"
                             style={{
                                 backgroundImage:
@@ -115,44 +113,31 @@ export default function PostcardBack({ userName, location = "-", text = "", post
                                 paddingTop: 6,
                                 paddingBottom: 6,
                             }}
-                        >
-                            
-                    <div
-              className="flex-1 pr-4 overflow-y-auto"
-              style={{
-                backgroundImage:
-                  "linear-gradient(to bottom, rgba(0,0,0,0.16) 1px, rgba(0,0,0,0) 1px)",
-                backgroundSize: "100% 44px",
-                paddingTop: 6,
-                paddingBottom: 6,
-              }}
-            >
-              <div
-                ref={containerRef}
-                onMouseMove={handleMouseMove}
-                onTouchStart={handleTouchStart}
-                className={`mt-1 space-y-3 sm:space-y-4 reveal-container ${postcardEffect} ${
-                  isTouchReveal ? "is-revealed" : ""
-                }`}
-              >
-                {textLines.map((line, i) => (
-                  <p
-                    key={i}
-                    className="text-justify text-[#404040]/95 wrap-break-word"
-                    style={{
-                      fontFamily: "Neucha, cursive",
-                      fontSize: "clamp(15px, 1.6vw, 20px)",
-                      lineHeight: "2.3",
-                    }}
-                  >
-                    {line}
-                  </p>
-                ))}
-              </div>
-            </div>
-
+                            >
+                            <div
+                                ref={containerRef}
+                                onMouseMove={handleMouseMove}
+                                onTouchStart={handleTouchStart}
+                                className={`mt-1 space-y-3 sm:space-y-4 reveal-container ${postcardEffect} ${
+                                isTouchReveal ? "is-revealed" : ""
+                                }`}
+                            >
+                                {textLines.map((line, i) => (
+                                <p
+                                    key={i}
+                                    className="text-justify text-[#404040]/95 wrap-break-word"
+                                    style={{
+                                    fontFamily: "Neucha, cursive",
+                                    fontSize: "clamp(15px, 1.6vw, 20px)",
+                                    lineHeight: "2.3",
+                                    }}
+                                >
+                                    {line}
+                                </p>
+                                ))}
+                            </div>
+                            </div>
                         </div>
-                    </div>
             
                     {/* RIGHT (address info) */}
                         <div className="postcard-right flex flex-col justify-center pl-12 md:pl-28 text-center lg:text-left">

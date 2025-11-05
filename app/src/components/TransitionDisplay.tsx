@@ -6,9 +6,10 @@ interface TransitionDisplayProps {
     title: string;
     subtitle?: string;
     onDone: () => void
+    durationMs?: number
 }
 
-export default function TransitionDisplay({ title, subtitle, onDone }: TransitionDisplayProps) {
+export default function TransitionDisplay({ title, subtitle, onDone, durationMs }: TransitionDisplayProps) {
     const [titleVisible, setTitleVisible] = useState(false)
     const [subtitleVisible, setSubtitleVisible] = useState(false)
     const [buttonVisible, setButtonVisible] = useState(false)
