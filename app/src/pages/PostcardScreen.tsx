@@ -57,6 +57,178 @@ export default function PostcardScreen() {
         return id.replace(/-/g, " ").replace(/b\w/g, (c) => c.toUpperCase())
     }, [])
 
+    const soundMap: Record<string, string> = {
+        house: "../assets/sounds/house.mp3",
+        city: "../assets/sounds/city.mp3",
+        shore: "../assets/sounds/shore.mp3"
+    }
+
+    const stageForId = useCallback((idVal: string) => {
+        if (!idVal) return null
+
+        if (idVal.startsWith("house")) return "house";
+        if (idVal.startsWith("city")) return "city";
+        if (idVal.startsWith("shore")) return "shore";
+        return null;
+    }, [])
+
+    const audioRefs = useRef<Record<string, HTMLAudioElement | null>>({
+        house: null,
+        city: null,
+        shore: null
+    })
+
+    const currentStageRef = useRef<string | null>(stageForId(currentId))
+    const fadingRef = useRef<number | null>(null)
+    const FADE_MS = 600
+    const [isMuted, setIsMuted] = useState<boolean>(() => {
+        try {
+            const v = localStorage.getItem("pc_sound_muted")
+            return v === "1"
+        } catch (error) {
+            console.error(error)
+            return false
+        }
+    })
+    const [audioUnlocked, setAudioUnlocked] = useState<boolean>(true)
+
+    const ensureAudio = useCallback((stage: string) => {
+        if (!stage) return null
+        if (!audioRefs.current[stage]) {
+            const src = soundMap[stage]
+            const a = new Audio(src)
+            a.loop = true
+            a.preload = "auto"
+            a.volume = 0
+            a.crossOrigin = "anonymous"
+            audioRefs.current[stage] = a
+        }
+
+        return audioRefs.current[stage]
+    }, [])
+
+    const crossFadeToStage = useCallback((targetStage: string | null) => {
+        if (fadingRef.current) {
+            cancelAnimationFrame(fadingRef.current)
+            fadingRef.current = null
+        }
+
+        const target = targetStage ? ensureAudio(targetStage) : null
+        const others = Object.keys(audioRefs.current)
+            .filter((k) => k !== targetStage)
+            .map((k) => audioRefs.current[k]!)
+
+        if (target) {
+            target.loop = true
+
+            const startPlay = () => target.play().catch(() => {
+                setAudioUnlocked(false)
+            })
+            startPlay()
+        }
+
+        const start = performance.now()
+        const fromVolumes: Map<HTMLAudioElement, number> = new Map()
+        if (target) fromVolumes.set(target, target.volume ?? 0)
+        others.forEach((o) => {
+            if (o) fromVolumes.set(o, o.volume ?? 0)
+        })
+
+        const step = (now: number) => {
+            const t = Math.min(1, (now - start) / FADE_MS)
+            const ease = Math.min(1, Math.max(0, t))
+
+            if (target) {
+                const desired = (isMuted ? 0 : 0.55) * ease
+                target.volume = Math.min(1, Math.max(0, desired))
+            }
+
+            others.forEach((o) => {
+                if (!o) return
+                const desired = (fromVolumes.get(o) ?? 1) * (1 - ease)
+                o.volume = Math.min(1, Math.max(0, desired))
+            })
+
+            if (t < 1) {
+                fadingRef.current = requestAnimationFrame(step)
+            } else {
+                others.forEach((o) => {
+                    if (!o) return
+                    o.pause()
+                    o.currentTime = 0
+                    o.volume = 0
+                })
+
+                if (target) {
+                    target.volume = isMuted ? 0 : 0.55
+                }
+                fadingRef.current = null
+            }
+        }
+
+        fadingRef.current = requestAnimationFrame(step)
+    }, [ensureAudio, isMuted])
+
+    useEffect(() => {
+        const stage = stageForId(currentId)
+        currentStageRef.current = stage
+
+        if (stage) {
+            ensureAudio(stage)
+        }
+        crossFadeToStage(stage ?? null)
+
+        return () => {
+
+        }
+    }, [currentId, ensureAudio, crossFadeToStage, stageForId])
+
+    const toggleMute = useCallback(() => {
+        const next = !isMuted
+        setIsMuted(next)
+        
+        try { localStorage.setItem("pc_sound_muted", next ? "1" : "0") } catch {}
+
+        Object.values(audioRefs.current).forEach((a) => {
+            if (!a) return
+            a.volume = next ? 0 : 0.55
+        })
+    }, [isMuted])
+
+    const enableAudio = useCallback(() => {
+        const stage = stageForId(currentId)
+        if (stage) {
+            const a = ensureAudio(stage)
+            if (!a) {
+                setAudioUnlocked(false)
+                return
+            }
+            
+            a.play().then(() => {
+                setAudioUnlocked(true)
+                a.volume = isMuted ? 0 : 0.55
+            }).catch(() => {
+                setAudioUnlocked(false)
+            })
+        }
+    }, [ensureAudio, currentId, isMuted, stageForId])
+
+    useEffect(() => {
+        return () => {
+            if (fadingRef.current) cancelAnimationFrame(fadingRef.current)
+                Object.values(audioRefs.current).forEach((a) => {
+                    try {
+                        if (a) {
+                            a.pause()
+                            a.src = ""
+                        } 
+                    } catch {}
+                }
+            )
+            audioRefs.current = { house: null, city: null, shore: null }
+        }
+    }, [])
+
     const getChoicesForId = (choicesId: string): Choice[] => {
         if (choicesId === "house-choices") return houseChoices
         if (choicesId === "city-choices") return cityChoices
@@ -82,6 +254,27 @@ export default function PostcardScreen() {
                     onCancel={() => {}}
                 >
                 </ChoicesDisplay>
+
+                <div className="absolute left-4 bottom-6 z-50">
+                    <div className="flex items-center gap-3">
+                        {!audioUnlocked ? (
+                            <button
+                                onClick={enableAudio}
+                                className="px-3 py-2 rounded-md bg-[#EDE8DE]/10 text-[#EDE8DE] text-sm backdrop-blur-sm"
+                            >
+                                Enable sound
+                            </button>
+                        ) : (
+                            <button
+                                onClick={toggleMute}
+                                className="px-3 py-2 rounded-md bg-[#EDE8DE]/8 text-[#EDE8DE] text-sm backdrop-blur-sm"
+                                aria-pressed={isMuted}
+                            >
+                                {isMuted ? "Unmute" : "Mute"}
+                            </button>
+                        )}
+                    </div>
+                </div>
             </div>
         )
     }
@@ -95,11 +288,12 @@ export default function PostcardScreen() {
         const next = getNext(currentId);
         if (!next) return navigate("/");
         if (shouldShowTransitionFor(currentId, next)) {
+            crossFadeToStage(null)
             setTransitionTarget(next);
             return;
         }
         navigate(`/postcards/${next}`, { state: { userName } });
-    }, [currentId, getNext, navigate, shouldShowTransitionFor, userName]);
+    }, [currentId, getNext, navigate, shouldShowTransitionFor, userName, crossFadeToStage]);
 
     const handleTransitionDone = () => {
         if (!transitionTarget) return
@@ -295,6 +489,27 @@ export default function PostcardScreen() {
                 >
                     {canFlip && <Button onClick={onFlipClick} variant="secondary" text={isFrontVisible ? "Flip to back" : "Flip to front"} />}
                     <Button text="Continue" onClick={handleContinue} variant="primary" />
+                </div>
+            </div>
+
+            <div className="absolute left-4 bottom-6 z-50">
+                <div className="flex items-center gap-3">
+                    {!audioUnlocked ? (
+                    <button
+                        onClick={enableAudio}
+                        className="px-3 py-2 rounded-md bg-[#EDE8DE]/10 text-[#EDE8DE] text-sm backdrop-blur-sm"
+                    >
+                        Enable sound
+                    </button>
+                    ) : (
+                    <button
+                        onClick={toggleMute}
+                        className="px-3 py-2 rounded-md bg-[#EDE8DE]/8 text-[#EDE8DE] text-sm backdrop-blur-sm"
+                        aria-pressed={isMuted}
+                    >
+                        {isMuted ? "Unmute" : "Mute"}
+                    </button>
+                    )}
                 </div>
             </div>
 
