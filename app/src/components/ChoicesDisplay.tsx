@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import Button from "./Button";
 import { motion, Variants, useReducedMotion } from "motion/react";
+import PostcardBack from "./PostcardBack";
+import { getPostcardById } from "../data/postcards";
 export interface Choice {
     id: string;
     postcardId: string;
@@ -91,7 +93,7 @@ export default function ChoicesDisplay({ title, subtitle, choices, initialSelect
                 </h1>
                 {subtitle && <p 
                     className={
-                        "mt-6 text-lg text-[#EDE8DE]/70" +
+                        "mt-6 2xl:mt-10 text-lg text-[#EDE8DE]/70" +
                         "transform transition-opacity transition-transform duration-700 ease-out " +
                         (subtitleVisible ? "opacity-60 translate-y-0" : "opacity-0 translate-y-4")
                     }
@@ -100,9 +102,11 @@ export default function ChoicesDisplay({ title, subtitle, choices, initialSelect
                 </p>}
             </div>
 
-            <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-12 mt-6">
+            <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-x-24 2xl:gap-x-40 gap-y-12 2xl:gap-y-20 mt-6 2xl:mt-20">
                 {choices.map((c) => {
                     const isSelected = selectedId === c.id
+                    const pc = getPostcardById(c.postcardId);
+
                     return (
                         <div key={c.id} className="flex justify-center">
                             <button
@@ -115,13 +119,12 @@ export default function ChoicesDisplay({ title, subtitle, choices, initialSelect
                                     }
                                 }}
                                 className={
-                                    "focus:outline-none" +
-                                    "transform transition-opacity transition-transform duration-700 ease-out " +
+                                    "focus:outline-none w-full max-w-[520px] xl:max-w-[680px] 2xl:max-w-[900px]" +
+                                    "transition-all transform duration-700 ease-out" +
                                     (tilesVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4")
                                 }
                                 aria-pressed={isSelected}
                                 aria-hidden={!tilesVisible}
-                                style={{ width: "100%", maxWidth: 520 }}
                             >
                                 <div
                                     className={`relative w-full rounded-lg overflow-hidden shadow-2xl transition-transform duration-150 ${
@@ -136,23 +139,49 @@ export default function ChoicesDisplay({ title, subtitle, choices, initialSelect
                                         border: isSelected ? "4px solid rgba(250,180,40,0.9)" : undefined,
                                     }}
                                 >
-                                    {isSelected && (
-                                        <div className="w-full h-full bg-black/6 flex items-end justify-center" />
-                                    )}
-                                    <div className="absolute inset-4 rounded-md bg-[#EDE8DE]/80 shadow-inner flex items-center justify-center">
-                                        {c.image ? (
-                                        <img
-                                            src={c.image}
-                                            alt={c.title}
-                                            className="max-h-[78%] max-w-[92%] object-contain pointer-events-none select-none"
-                                            draggable={false}
-                                        />
-                                        ) : (
-                                        <div className="text-2xl text-[#404040]/40">Illustration</div>
-                                        )}
+
+                                    <div
+                                        className="absolute inset-0 rounded-md shadow-inner overflow-hidden bg-transparent"
+                                        style={{
+                                        display: "block",
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                width: "100%",
+                                                height: "100%",
+                                                overflow: "hidden",
+                                                position: "relative",
+                                            }}
+                                        >
+                                            {pc ? (
+                                                <div
+                                                style={{
+                                                    position: "absolute",
+                                                    inset: 0,
+                                                    transform: "scale(1.06)",
+                                                    transformOrigin: "center center",
+                                                    filter: "blur(6px) saturate(0.95) brightness(0.95)",
+                                                    pointerEvents: "none",
+                                                }}
+                                                >
+                                                <PostcardBack
+                                                    userName={undefined}
+                                                    location={pc.postmarked || ""}
+                                                    text={pc.message}
+                                                    postcardBg={pc.image || "/assets/bg/postcard.svg"}
+                                                    showFlip={false}
+                                                    portrait={false}
+                                                />
+                                                </div>
+                                            ) : (
+                                                <div className="flex items-center justify-center w-full h-full bg-[#EDE8DE]/60">
+                                                    <span className="text-[#404040]/40">No preview</span>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-
                                 <div className="mt-4 text-left pl-1">
                                     <div className={`text-lg font-neucha ${isSelected ? "text-[#EDE8DE]" : "text-[#EDE8DE]"}`}>
                                         {c.title}
@@ -165,7 +194,7 @@ export default function ChoicesDisplay({ title, subtitle, choices, initialSelect
                 })}
             </div>
             
-            <div className="w-full max-w-6xl flex items-center justify-center my-16">
+            <div className="w-full max-w-6xl flex items-center justify-center my-12 2xl:my-24">
                 <div 
                     className={
                         "flex items-center gap-8" + 

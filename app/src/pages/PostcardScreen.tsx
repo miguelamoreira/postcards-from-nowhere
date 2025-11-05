@@ -289,7 +289,7 @@ export default function PostcardScreen() {
                         relative z-20 flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10
                         ${isFrontVisible
                         ? "mt-0 sm:mt-8 md:mt-10 lg:mt-12 xl:mt-16 2xl:mt-0"
-                        : "mt-0 sm:mt-6 md:mt-8 lg:mt-10 xl:mt-16 2xl:mt-0" 
+                        : "mt-0 sm:mt-6 md:mt-6 lg:mt-8 xl:mt-8 2xl:mt-0" 
                         }
                     `}
                 >
