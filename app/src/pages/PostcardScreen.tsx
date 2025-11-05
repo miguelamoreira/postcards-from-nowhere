@@ -217,9 +217,9 @@ export default function PostcardScreen() {
                 >
                 <div ref={frontSurfaceRef}>
                     <PostcardFront
-                        postcardBg={currentPostcard.image || undefined}
                         showFlip={false}
                         portrait={true}
+                        image={currentPostcard.image}
                     />
                 </div>
 
@@ -229,7 +229,6 @@ export default function PostcardScreen() {
                         location={currentPostcard.postmarked || ""}
                         text={currentPostcard.message}
                         showFlip={false}
-                        postcardBg={currentPostcard.image || undefined}
                         portrait={false}
                     />
                 </div>
@@ -261,9 +260,9 @@ export default function PostcardScreen() {
                         >
                         <div style={frontFaceStyle} className="pc-face-front" aria-hidden={currentId === "first"}>
                             <PostcardFront
-                                postcardBg={currentPostcard.image || undefined}
                                 showFlip={false}
                                 portrait={true}
+                                image={currentPostcard.image}
                             />
                         </div>
 
@@ -273,7 +272,6 @@ export default function PostcardScreen() {
                                 location={currentPostcard.postmarked || ""}
                                 text={currentPostcard.message}
                                 showFlip={false}
-                                postcardBg={currentPostcard.image || undefined}
                                 portrait={false}
                             />
                         </div>

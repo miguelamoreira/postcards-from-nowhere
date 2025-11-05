@@ -10,7 +10,7 @@ export interface Choice {
 }
 
 interface ChoicesDisplayProps {
-    title: string;
+    title?: string;
     subtitle?: string;
     choices: Choice[];
     initialSelectedId?: string | null;

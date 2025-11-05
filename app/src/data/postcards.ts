@@ -19,7 +19,8 @@ export const postcards: Postcard[] = [
         isRead: false,
         illustration: "",
         transitionLabel: "Where echoes remember what we’ve forgotten",
-        choiceLabel: "Choose the echo you want to follow"
+        choiceLabel: "Choose the echo you want to follow",
+        image: "/assets/postcards/house.jpg"
     },
     {
         id: 'house-choice-1',
@@ -77,7 +78,8 @@ export const postcards: Postcard[] = [
         isRead: false,
         illustration: "",
         transitionLabel: "Where endings drift and beginnings wait",
-        choiceLabel: "Listen to the waves and pick the one that calls back"
+        choiceLabel: "Listen to the waves and pick the one that calls back",
+        image: "/assets/postcards/shore.jpg"
     },
     {
         id: 'shore-choice-1',
@@ -103,7 +105,7 @@ export const getPostcardById = (id:string): Postcard | undefined => {
     return postcards.find(p => p.id === id)
 }
 
-export const postcardFlow = {
+export const postcardFlow: { [key: string]: string } = {
     first: 'house-main',
     'house-main': 'house-choices',
     'house-choice-1': 'city-main',
