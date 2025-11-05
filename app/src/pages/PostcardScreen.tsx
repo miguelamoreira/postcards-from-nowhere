@@ -16,16 +16,16 @@ export default function PostcardScreen() {
     const storedUser = typeof window !== "undefined" ? sessionStorage.getItem("pc_userName") : null;
     const userName = stateUser ?? storedUser ?? "";
     const currentId = id || "first";
-    const [isFrontVisible, setIsFrontVisible] = useState<boolean>(() => (currentId === "first" ? false : true));
+    const canFlip = currentId.endsWith("-main")
+    const [isFrontVisible, setIsFrontVisible] = useState<boolean>(() => (canFlip ? true : false));
     const [transitionTarget, setTransitionTarget] = useState<string | null>(null);
 
     const reduceMotion = useReducedMotion();
 
     useEffect(() => {
-        setIsFrontVisible(currentId === "first" ? false : true);
+        setIsFrontVisible(currentId.endsWith("-main") ? true : false);
         setTransitionTarget(null);
     }, [currentId]);
-
 
     const getNext = useCallback((id:string) => postcardFlow[id], [])
     const shouldShowTransitionFor = useCallback((fromId: string, toId: string | undefined) => {
@@ -124,19 +124,16 @@ export default function PostcardScreen() {
     useEffect(() => {
     const measure = () => {
         requestAnimationFrame(() => {
-        const fh = frontSurfaceRef.current?.offsetHeight ?? 0; // portrait preview height
-        const bh = backSurfaceRef.current?.offsetHeight ?? 0;  // landscape preview height
+        const fh = frontSurfaceRef.current?.offsetHeight ?? 0;
+        const bh = backSurfaceRef.current?.offsetHeight ?? 0;
 
         const viewportH = typeof window !== "undefined" ? window.innerHeight : 900;
-        // Reserve space for top padding, page chrome and the buttons area (adjust if you have larger controls)
-        const reservedForUi = 160; // px (buttons + padding). Increase if you have headers/toolbars.
-        const maxAvailable = Math.max(280, viewportH - reservedForUi); // never smaller than a sane minimum
+        const reservedForUi = 160;
+        const maxAvailable = Math.max(280, viewportH - reservedForUi);
 
-        // reduction factors tuned for portrait vs landscape
         const reducedFront = fh * 0.82 - 48;
         const reducedBack = bh * 0.88 - 60;
 
-        // clamp but also respect available viewport space
         const clampedFront = Math.min(Math.max(reducedFront, 260), Math.min(900, Math.round(maxAvailable * 0.95)));
         const clampedBack = Math.min(Math.max(reducedBack, 300), Math.min(1100, Math.round(maxAvailable * 0.98)));
 
@@ -151,9 +148,9 @@ export default function PostcardScreen() {
         });
     };
 
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
+        measure();
+        window.addEventListener("resize", measure);
+        return () => window.removeEventListener("resize", measure);
     }, [isFrontVisible, currentPostcard, currentId]);
 
     const portraitWidth = "min(60vw, 520px)";
@@ -189,7 +186,7 @@ export default function PostcardScreen() {
     };
 
     const onFlipClick = () => {
-        if (currentId === "first") return;
+        if (!canFlip) return;
         setIsFrontVisible((p) => !p);
     };
 
@@ -296,7 +293,7 @@ export default function PostcardScreen() {
                         }
                     `}
                 >
-                    {currentId !== "first" && <Button onClick={onFlipClick} variant="secondary" text={isFrontVisible ? "Flip to back" : "Flip to front"} />}
+                    {canFlip && <Button onClick={onFlipClick} variant="secondary" text={isFrontVisible ? "Flip to back" : "Flip to front"} />}
                     <Button text="Continue" onClick={handleContinue} variant="primary" />
                 </div>
             </div>
