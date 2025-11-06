@@ -421,6 +421,7 @@ export default function PostcardScreen() {
                         text={currentPostcard.message}
                         showFlip={false}
                         portrait={false}
+                        date={currentPostcard.date || ""}
                     />
                 </div>
                 </div>
@@ -464,6 +465,7 @@ export default function PostcardScreen() {
                                 text={currentPostcard.message}
                                 showFlip={false}
                                 portrait={false}
+                                date={currentPostcard.date || ""}
                             />
                         </div>
 

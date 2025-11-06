@@ -14,7 +14,7 @@ export default function TransitionDisplay({ title, subtitle, onDone, durationMs 
     const [subtitleVisible, setSubtitleVisible] = useState(false)
     const [buttonVisible, setButtonVisible] = useState(false)
     const reduceMotion = useReducedMotion();
-    const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+    const timeoutsRef = useRef<number[]>([]);
 
     useEffect(() => {
         timeoutsRef.current.forEach((t) => clearTimeout(t));

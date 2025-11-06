@@ -14,7 +14,7 @@ export default function WriteBackScreen() {
     const [tilesVisible, setTilesVisible] = useState(false)
     const [buttonsVisible, setButtonsVisible] = useState(false)
     const reduceMotion = useReducedMotion();
-    const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+    const timeoutsRef = useRef<number[]>([]);
 
     const tiles = [
         { id: "t1", image: undefined },

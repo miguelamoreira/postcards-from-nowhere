@@ -4,13 +4,13 @@ export interface Postcard {
     id: string;
     to: string;
     message: string;
-    from: string;
     postmarked: string;
     isRead: boolean;
     illustration: string;
     transitionLabel?: string;
     choiceLabel?: string;
     image?: string;
+    date?: string;
 }
 
 export interface AppState {

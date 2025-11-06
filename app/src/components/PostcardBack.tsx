@@ -8,9 +8,10 @@ interface PostcardBackProps {
     stampSrc?: string;
     showFlip?: boolean;
     portrait?: boolean
+    date?: string;
 }
 
-export default function PostcardBack({ userName, location = "-", text = "", postcardBg = "../assets/bg/postcard.svg", stampSrc = "/assets/stamp.svg", showFlip = false, portrait }: PostcardBackProps) {
+export default function PostcardBack({ userName, location = "-", text = "", postcardBg = "../assets/bg/postcard.svg", stampSrc = "/assets/stamp.svg", showFlip = false, portrait, date }: PostcardBackProps) {
     const textLines = (text || "").split("\n")
 
     const effects = ["effect-ink", "effect-heat"];
@@ -35,6 +36,8 @@ export default function PostcardBack({ userName, location = "-", text = "", post
     const handleTouchStart = () => {
         setIsTouchReveal(true);
     };
+
+    const formatted = date ? new Date(date).toLocaleDateString(undefined, { year: "numeric", month: "numeric", day: "numeric" }) : null;
 
     return (
         <>
@@ -150,8 +153,7 @@ export default function PostcardBack({ userName, location = "-", text = "", post
                                             fontSize: "clamp(15px, 1.8vw, 20px)",
                                         }}
                                     >
-                                        <span className="text-[#404040]/50">From:</span>
-                                        <span className="text-[#404040]/80"> -</span>
+                                        <span className="text-[#404040]/50">From: {userName || "Myself"}</span>
                                     </p>
                                 </div>
             
@@ -173,6 +175,27 @@ export default function PostcardBack({ userName, location = "-", text = "", post
                                         }}
                                     >
                                         {location || "-"}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <p
+                                        className="text-[#404040]/70"
+                                        style={{
+                                            fontFamily: "Neucha",
+                                            fontSize: "clamp(15px, 1.8vw, 20px)",
+                                        }}
+                                    >
+                                        <span className="text-[#404040]/50">Date:</span>
+                                    </p>
+                                    <p
+                                        className="mt-1 text-[#404040]/85"
+                                        style={{
+                                            fontFamily: "Neucha",
+                                            fontSize: "clamp(15px, 1.6vw, 18px)",
+                                        }}
+                                    >
+                                        {formatted || "-"}
                                     </p>
                                 </div>
                             </div>

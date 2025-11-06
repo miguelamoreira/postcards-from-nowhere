@@ -12,14 +12,14 @@ export default function Index() {
     const [subtitleVisible, setSubtitleVisible] = useState(false)
     const [buttonVisible, setButtonVisible] = useState(false)
 
-    const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+    const timeoutsRef = useRef<number[]>([]);
     const reduceMotion = useReducedMotion()
     const nameInputRef = useRef<HTMLInputElement | null>(null);
     const isNavigatingRef = useRef(false);
     const pendingNavigateRef = useRef<{ path: string; state?: any } | null>(null);
 
     useEffect(() => {
-        timeoutsRef.current.forEach((t) => clearTimeout(t));
+        timeoutsRef.current.forEach((t) => window.clearTimeout(t));
         timeoutsRef.current = [];
 
 
@@ -50,8 +50,8 @@ export default function Index() {
 
             const focusDelay = reduceMotion ? 0 : 220;
             timeoutsRef.current.push(
-                setTimeout(() => {
-                nameInputRef.current?.focus?.();
+                window.setTimeout(() => {
+                    nameInputRef.current?.focus?.();
                 }, focusDelay)
             );
         }

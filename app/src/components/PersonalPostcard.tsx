@@ -23,7 +23,7 @@ export default function PersonalPostcard({ initialIllustration, onCancel, onSent
     const [cardVisible, setCardVisible] = useState(false)
     const [buttonsVisible, setButtonsVisible] = useState(false)
     const reduceMotion = useReducedMotion();
-    const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+    const timeoutsRef = useRef<number[]>([]);
 
     const [sentTitleVisible, setSentTitleVisible] = useState(false)
     const [sentCopyVisible, setSentCopyVisible] = useState(false)
