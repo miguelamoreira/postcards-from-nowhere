@@ -1,7 +1,7 @@
 export type Screen = 'home' | 'namePrompt' | 'postcardView' | 'postcardChoice' | 'writeBack' | 'end';
 
 export interface Postcard {
-    id: string;
+    slugId: string;
     to: string;
     message: string;
     postmarked: string;
@@ -11,6 +11,8 @@ export interface Postcard {
     choiceLabel?: string;
     image?: string;
     date?: string;
+    source?: string;
+    from?: string;
 }
 
 export interface AppState {

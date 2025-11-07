@@ -10,7 +10,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Index></Index>}></Route>
-        <Route path="/postcards/:id" element={<PostcardScreenWrapper></PostcardScreenWrapper>}></Route>
+        <Route path="/postcards/:slugId" element={<PostcardScreenWrapper></PostcardScreenWrapper>}></Route>
         <Route path='/postcards/writeBack' element={<WriteBackScreen></WriteBackScreen>}></Route>
       </Routes>
     </BrowserRouter>

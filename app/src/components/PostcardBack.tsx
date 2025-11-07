@@ -9,9 +9,11 @@ interface PostcardBackProps {
     showFlip?: boolean;
     portrait?: boolean
     date?: string;
+    from?: string;
+    slugId?: string;
 }
 
-export default function PostcardBack({ userName, location = "-", text = "", postcardBg = "../assets/bg/postcard.svg", stampSrc = "/assets/stamp.svg", showFlip = false, portrait, date }: PostcardBackProps) {
+export default function PostcardBack({ userName, location = "-", text = "", postcardBg = "../assets/bg/postcard.svg", stampSrc = "/assets/stamp.svg", showFlip = false, portrait, date, from, slugId }: PostcardBackProps) {
     const textLines = (text || "").split("\n")
 
     const effects = ["effect-ink", "effect-heat"];
@@ -38,6 +40,8 @@ export default function PostcardBack({ userName, location = "-", text = "", post
     };
 
     const formatted = date ? new Date(date).toLocaleDateString(undefined, { year: "numeric", month: "numeric", day: "numeric" }) : null;
+    const isUserCard = slugId ? /^user-/.test(slugId) : false;
+    const fromDisplay = isUserCard ? (from || userName || "") : (userName || "Myself");
 
     return (
         <>
@@ -153,7 +157,16 @@ export default function PostcardBack({ userName, location = "-", text = "", post
                                             fontSize: "clamp(15px, 1.8vw, 20px)",
                                         }}
                                     >
-                                        <span className="text-[#404040]/50">From: {userName || "Myself"}</span>
+                                        <span className="text-[#404040]/50">From: </span>
+                                    </p>
+                                    <p
+                                        className="mt-1 text-[#404040]/85"
+                                        style={{
+                                            fontFamily: "Neucha",
+                                            fontSize: "clamp(15px, 1.6vw, 18px)",
+                                        }}
+                                    >
+                                        {fromDisplay}
                                     </p>
                                 </div>
             

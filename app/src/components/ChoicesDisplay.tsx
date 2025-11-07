@@ -2,9 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import Button from "./Button";
 import { motion, Variants, useReducedMotion } from "motion/react";
 import PostcardBack from "./PostcardBack";
-import { getPostcardById } from "../data/postcards";
+import type { Postcard } from "../types";
 export interface Choice {
-    id: string;
+    slugId: string;
     postcardId: string;
     title: string;
     subtitle?: string;
@@ -15,12 +15,14 @@ interface ChoicesDisplayProps {
     title?: string;
     subtitle?: string;
     choices: Choice[];
+    postcards: Postcard[];
     initialSelectedId?: string | null;
     onSelect: (choice: Choice) => void;
     onCancel?: () => void;
 }
 
-export default function ChoicesDisplay({ title, subtitle, choices, initialSelectedId = null, onSelect, onCancel }: ChoicesDisplayProps) {
+
+export default function ChoicesDisplay({ title, subtitle, choices, initialSelectedId = null, onSelect, onCancel, postcards }: ChoicesDisplayProps) {
     const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId)
 
     const [titleVisible, setTitleVisible] = useState(false)
@@ -74,8 +76,10 @@ export default function ChoicesDisplay({ title, subtitle, choices, initialSelect
         if (onCancel) onCancel()
     }
 
-    const selectedChoice = choices.find((c) => c.id === selectedId) ?? null;
+    const selectedChoice = choices.find((c) => c.slugId === selectedId) ?? null;
     const postcardBg = "/assets/bg/postcard.svg";
+
+    const getPostcardById = (slugId: string): Postcard | undefined => postcards.find((p) => p.slugId === slugId);
 
     return (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-start pt-20 px-6 sm:px-12 bg-[#404040] text-[#EDE8DE] overflow-auto">
@@ -104,18 +108,18 @@ export default function ChoicesDisplay({ title, subtitle, choices, initialSelect
 
             <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-x-24 2xl:gap-x-40 gap-y-12 2xl:gap-y-20 mt-6 2xl:mt-20">
                 {choices.map((c) => {
-                    const isSelected = selectedId === c.id
+                    const isSelected = selectedId === c.slugId
                     const pc = getPostcardById(c.postcardId);
 
                     return (
-                        <div key={c.id} className="flex justify-center">
+                        <div key={c.slugId} className="flex justify-center">
                             <button
                                 type="button"
-                                onClick={() => handleCardClick(c.id)}
+                                onClick={() => handleCardClick(c.slugId)}
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter" || e.key === " ") {
                                     e.preventDefault();
-                                    handleCardClick(c.id);
+                                    handleCardClick(c.slugId);
                                     }
                                 }}
                                 className={

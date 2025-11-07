@@ -3,7 +3,8 @@ import html2canvas from "html2canvas";
 import jsPDF, { jsPDFAPI } from "jspdf";
 import Button from "./Button";
 import { motion, Variants, useReducedMotion } from "motion/react";
-
+import { createPostcard } from "../api/api";
+import { useLocation } from "react-router-dom";
 interface Props {
     initialIllustration?: string | undefined;
     onCancel?: () => void;
@@ -28,6 +29,11 @@ export default function PersonalPostcard({ initialIllustration, onCancel, onSent
     const [sentTitleVisible, setSentTitleVisible] = useState(false)
     const [sentCopyVisible, setSentCopyVisible] = useState(false)
     const [sentButtonsVisible, setSentButtonsVisible] = useState(false)
+
+    const location = useLocation();
+    const stateUser = (location.state as { userName?: string } | null)?.userName;
+    const storedUser = typeof window !== "undefined" ? sessionStorage.getItem("pc_userName") : null;
+    const userName = stateUser || storedUser || "Anonymous";
 
     const postcardBg = "/assets/bg/postcard.svg";
 
@@ -110,8 +116,18 @@ export default function PersonalPostcard({ initialIllustration, onCancel, onSent
         setSending(true)
 
         try {
-            await new Promise((r) => setTimeout(r, 900))
-            setSent(true)
+            const newPostcard = await createPostcard({
+                message,
+                from: userName,
+                postmarked: "Personal Messages",
+                date: new Date().toISOString(),
+                slugId: `user-${crypto.randomUUID()}`,
+                source: "user",
+                scene: "personal"
+            });
+
+            console.log("Postcard created: ", newPostcard);
+            setSent(true);
         } catch (error) {
             console.error(error)
         } finally {
