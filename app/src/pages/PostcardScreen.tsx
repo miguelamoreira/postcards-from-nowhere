@@ -513,7 +513,7 @@ export default function PostcardScreen() {
     }
 
     if (renderMode === "notFound") {
-        return <div className="text-white p-6">Postcard not found</div>;
+        return <div className="text-white p-6"></div>;
     }
 
     const postcard = currentPostcard!;
