@@ -178,7 +178,8 @@ export default function PostcardScreen() {
     const soundMap: Record<string, string> = {
         house: "../assets/sounds/house.mp3",
         city: "../assets/sounds/city.mp3",
-        shore: "../assets/sounds/shore.mp3"
+        shore: "../assets/sounds/shore.mp3",
+        writing: "../assets/sounds/writing.mp3"
     }
 
     const stageForId = useCallback((idVal: string) => {
@@ -187,13 +188,15 @@ export default function PostcardScreen() {
         if (idVal.startsWith("house")) return "house";
         if (idVal.startsWith("city")) return "city";
         if (idVal.startsWith("shore")) return "shore";
+        if (idVal.startsWith("writing")) return "writing"
         return null;
     }, [])
 
     const audioRefs = useRef<Record<string, HTMLAudioElement | null>>({
         house: null,
         city: null,
-        shore: null
+        shore: null,
+        writing: null
     })
 
     const currentStageRef = useRef<string | null>(stageForId(currentSlugId))
@@ -208,7 +211,7 @@ export default function PostcardScreen() {
             return false
         }
     })
-    const [audioUnlocked, setAudioUnlocked] = useState<boolean>(true)
+    const [audioUnlocked, setAudioUnlocked] = useState<boolean>(false)
 
     const ensureAudio = useCallback((stage: string) => {
         if (!stage) return null
@@ -225,6 +228,18 @@ export default function PostcardScreen() {
         return audioRefs.current[stage]
     }, [])
 
+    const ensureWritingAudio = useCallback(() => {
+        if (!audioRefs.current.writing) {
+            const a = new Audio(soundMap.writing);
+            a.loop = true;
+            a.preload = "auto";
+            a.volume = 0.55;
+            audioRefs.current.writing = a;
+        }
+
+        return audioRefs.current.writing;
+    }, [])
+
     const crossFadeToStage = useCallback((targetStage: string | null) => {
         if (fadingRef.current) {
             cancelAnimationFrame(fadingRef.current)
@@ -239,9 +254,11 @@ export default function PostcardScreen() {
         if (target) {
             target.loop = true
 
-            const startPlay = () => target.play().catch(() => {
-                setAudioUnlocked(false)
-            })
+            const startPlay = () => {
+                target.play()
+                    .then(() => setAudioUnlocked(true))
+                    .catch(() => setAudioUnlocked(false))
+            }
             startPlay()
         }
 
@@ -286,6 +303,33 @@ export default function PostcardScreen() {
 
         fadingRef.current = requestAnimationFrame(step)
     }, [ensureAudio, isMuted])
+
+    const playWritingWhileHover = useCallback((hovering: boolean) => {
+        const writingAudio = ensureWritingAudio();
+        const otherAudios = Object.entries(audioRefs.current)
+            .filter(([key]) => key !== "writing")
+            .map(([, audio]) => audio)
+            .filter((a): a is HTMLAudioElement => !!a);
+
+        if (hovering) {
+            otherAudios.forEach(a => {
+                a.pause();
+                a.volume = 0;
+            });
+
+            writingAudio.volume = isMuted ? 0 : 0.55;
+            writingAudio.loop = true;
+            writingAudio.play().catch(() => setAudioUnlocked(false));
+        } else {
+            writingAudio.pause();
+            writingAudio.currentTime = 0;
+
+            const stage = currentStageRef.current;
+            if (stage) {
+                crossFadeToStage(stage);
+            }
+        }
+    }, [ensureWritingAudio, crossFadeToStage, isMuted]);
 
     useEffect(() => {
         const stage = stageForId(currentSlugId)
@@ -455,12 +499,10 @@ export default function PostcardScreen() {
     };
 
     const renderMode = useMemo(() => {
-        // Always prioritize choices screens
         if (currentSlugId.endsWith("-choices")) {
             return "choices";
         }
 
-        // Then handle missing postcards
         if (!currentPostcard) {
             return "notFound";
         }
@@ -594,7 +636,7 @@ export default function PostcardScreen() {
                             />
                         </div>
 
-                        <div style={backFaceStyle} className="pc-face-back" aria-hidden={isFrontVisible}>
+                        <div style={backFaceStyle} className="pc-face-back" aria-hidden={isFrontVisible} onMouseEnter={() => playWritingWhileHover(true)} onMouseLeave={() => playWritingWhileHover(false)}>
                             <PostcardBack
                                 userName={userName}
                                 location={postcard.postmarked || ""}
