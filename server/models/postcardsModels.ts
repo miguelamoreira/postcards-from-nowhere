@@ -8,6 +8,7 @@ export interface IPostcard extends Document {
     message: string;
     date?: string;
     illustration?: string | null;
+    fallBackIllustration?: string | null;
     transitionLabel?: string,
     choiceLabel?: string;
     source?: "seed" | "user";
@@ -23,6 +24,7 @@ const PostcardSchema = new Schema<IPostcard>({
     message: { type: String, required: true },
     date: { type: String },
     illustration: { type: String },
+    fallBackIllustration: { type: String },
     transitionLabel: { type: String },
     choiceLabel: { type: String },
     source: { type: String, enum: ["seed", "user"], default: "user" },

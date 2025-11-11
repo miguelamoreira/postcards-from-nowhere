@@ -262,4 +262,8 @@
   .effect-heat.reveal-container:hover::before {
     opacity: 0.6;
   }
+
+  video, img {
+    transition: opacity 0.4s ease;
+  }
 }

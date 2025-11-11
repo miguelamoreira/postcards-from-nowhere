@@ -10,6 +10,7 @@ export interface Postcard {
     transitionLabel?: string;
     choiceLabel?: string;
     image?: string;
+    fallBackIllustration?: string;
     date?: string;
     source?: string;
     from?: string;

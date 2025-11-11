@@ -17,9 +17,9 @@ export default function WriteBackScreen() {
     const timeoutsRef = useRef<number[]>([]);
 
     const tiles = [
-        { id: "t1", image: "../assets/postcards/house.PNG" },
-        { id: "t2", image: "../assets/postcards/city.PNG" },
-        { id: "t3", image: "../assets/postcards/shore.PNG" },
+        { id: "t1", image: "https://res.cloudinary.com/deru44tum/image/upload/v1762877758/house_ysy9pk.png" },
+        { id: "t2", image: "https://res.cloudinary.com/deru44tum/image/upload/v1762877758/city_jax6ki.png" },
+        { id: "t3", image: "https://res.cloudinary.com/deru44tum/image/upload/v1762878020/shore_n5jfwb.png" },
     ];
 
     const postcardBg = "/assets/bg/postcard.svg";

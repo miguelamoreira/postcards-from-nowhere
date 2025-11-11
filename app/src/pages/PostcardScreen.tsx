@@ -587,6 +587,7 @@ export default function PostcardScreen() {
                         showFlip={false}
                         portrait={true}
                         image={postcard.illustration}
+                        fallBackImage={postcard.fallBackIllustration}
                     />
                 </div>
 
@@ -633,6 +634,7 @@ export default function PostcardScreen() {
                                 showFlip={false}
                                 portrait={true}
                                 image={postcard.illustration}
+                                fallBackImage={postcard.fallBackIllustration}
                             />
                         </div>
 

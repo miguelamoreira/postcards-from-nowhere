@@ -89,6 +89,7 @@ router.post("/", async (req, res) => {
             message: String(body.message || ""),
             date: body.date || undefined,
             illustration: body.illustration || null,
+            fallBackIllustration: body.fallBackIllustration || null,
             source: "user",
             created_at: new Date(),
             scene: body.scene || null
