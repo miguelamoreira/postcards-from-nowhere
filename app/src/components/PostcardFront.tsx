@@ -21,7 +21,7 @@ export default function PostcardFront({ postcardBg = "../assets/bg/postcard.svg"
             >
                 <div className="absolute inset-[5%] rounded-mdshadow-inner flex items-center justify-center">
                     {image ? (
-                            <img src={image} alt="illustration" className="max-h-full max-w-full object-cover" />
+                            <video src={image} autoPlay loop muted playsInline className="w-full h-full object-cover" />
                         ) : (
                             "Illustration area"
                     )}

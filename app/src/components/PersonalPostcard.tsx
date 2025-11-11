@@ -190,56 +190,73 @@ export default function PersonalPostcard({ initialIllustration, onCancel, onSent
             </div>
         )
     }
-
+    
     const downloadPDF = async () => {
         if (!canSend) {
-            alert("Please write a message before downloading")
-            return
+            alert("Please write a message before downloading");
+            return;
         }
-        setDownloading(true)
+        setDownloading(true);
 
         try {
             const nodes = [
-                { node: hiddenFrontRef.current, name: "front" },
-                { node: hiddenBackRef.current, name: "back" }
-            ]
+            { node: hiddenFrontRef.current, name: "front" },
+            { node: hiddenBackRef.current, name: "back" }
+            ];
 
             const pdf = new jsPDF({
-                orientation: "landscape",
-                unit: "pt",
-                format: "a4"
-            })
+            orientation: "portrait", // keep page portrait
+            unit: "pt",
+            format: "a4"
+            });
 
             const canvasScale = 3;
+            const pdfMargin = 60;
+
+            const pageW = pdf.internal.pageSize.getWidth();
+            const pageH = pdf.internal.pageSize.getHeight();
+            // vertical layout: top and bottom slots
+            const halfPageH = (pageH - 3 * pdfMargin) / 2;
 
             for (let i = 0; i < nodes.length; i++) {
                 const entry = nodes[i]
                 if (!entry.node) throw new Error(`${entry.name} node not found`)
 
-                const canvas = await html2canvas(entry.node as HTMLElement, { scale: canvasScale, useCORS: true })
-                const imgData = canvas.toDataURL("image/png")
+                const canvas = await html2canvas(entry.node as HTMLElement, {
+                    scale: canvasScale,
+                    useCORS: true,
+                    allowTaint: true
+                })
 
-                const pageW = pdf.internal.pageSize.getWidth()
-                const pageH = pdf.internal.pageSize.getHeight()
+                const rotated = document.createElement("canvas")
+                rotated.width = canvas.height
+                rotated.height = canvas.width
+                const ctx = rotated.getContext("2d")!
+                ctx.translate(rotated.width / 2, rotated.height / 2)
+                ctx.rotate(Math.PI / 2)
+                ctx.drawImage(canvas, -canvas.width / 2, -canvas.height / 2);
 
-                const margin = 40
-                let drawW = pageW - margin * 2
-                let drawH = (canvas.height / canvas.width) * drawW
-                if (drawH > pageH - margin * 2) {
-                    drawH = pageH - margin * 2
-                    drawH = (canvas.width / canvas.height) * drawH
+                const imgData = rotated.toDataURL("image/png")
+
+                const postcardAspect = rotated.width / rotated.height;
+
+                let drawH = halfPageH
+                let drawW = drawH * postcardAspect
+
+                const maxW = pageW - 2 * pdfMargin
+                if (drawW > maxW) {
+                    drawW = maxW
+                    drawH = drawW / postcardAspect
                 }
 
                 const x = (pageW - drawW) / 2
-                const y = (pageH - drawH) / 2
+                const y = pdfMargin + i * (halfPageH + pdfMargin / 2)
 
-                if (i > 0) pdf.addPage()
                 pdf.addImage(imgData, "PNG", x, y, drawW, drawH)
             }
 
             pdf.save("postcard.pdf")
         } catch (error) {
-            console.error(error)
             alert("Failed to generate PDF")
         } finally {
             setDownloading(false)
@@ -340,8 +357,8 @@ export default function PersonalPostcard({ initialIllustration, onCancel, onSent
                     <div
                         ref={hiddenFrontRef}
                         style={{
-                            width: 1166,
-                            height: 656,
+                            width: 420,
+                            height: 630,
                             boxSizing: "border-box",
                             backgroundImage: `url(${postcardBg})`,
                             backgroundSize: "cover",
@@ -353,10 +370,20 @@ export default function PersonalPostcard({ initialIllustration, onCancel, onSent
                             justifyContent: "center",
                         }}
                     >
-                        <div style={{ margin: 32, background: "#F7F3EC", flex: 1, borderRadius: 4, padding: 28, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <div style={{ margin: 32, background: "#F7F3EC", flex: 1, borderRadius: 4, padding: 28, display: "flex", alignItems: "stretch", justifyContent: "center", overflow: "hidden" }}>
                             {initialIllustration ? (
-                                <img src={initialIllustration} style={{ maxWidth: "100%", maxHeight: "100%" }} alt="illustration" />
-                            ) : (
+                                <img
+                                    src={initialIllustration}
+                                    alt="illustration"
+                                    style={{
+                                    width: "auto",
+                                    height: "100%",
+                                    objectFit: "contain",
+                                    transform: "scale(1.5)",
+                                    transformOrigin: "center",
+                                    }}
+                                />
+                                ) : (
                                 <div style={{ color: "#404040" }}>Illustration</div>
                             )}
                         </div>
@@ -366,8 +393,8 @@ export default function PersonalPostcard({ initialIllustration, onCancel, onSent
                     <div
                     ref={hiddenBackRef}
                     style={{
-                        width: 1166,
-                        height: 656,
+                        width: 420,
+                        height: 630,
                         boxSizing: "border-box",
                         backgroundImage: `url(${postcardBg})`,
                         backgroundSize: "cover",

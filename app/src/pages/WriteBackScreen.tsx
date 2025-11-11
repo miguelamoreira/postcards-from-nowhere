@@ -17,9 +17,9 @@ export default function WriteBackScreen() {
     const timeoutsRef = useRef<number[]>([]);
 
     const tiles = [
-        { id: "t1", image: undefined },
-        { id: "t2", image: undefined },
-        { id: "t3", image: undefined },
+        { id: "t1", image: "../assets/postcards/house.PNG" },
+        { id: "t2", image: "../assets/postcards/city.PNG" },
+        { id: "t3", image: "../assets/postcards/shore.PNG" },
     ];
 
     const postcardBg = "/assets/bg/postcard.svg";
@@ -107,7 +107,7 @@ export default function WriteBackScreen() {
                 </p>
             </div>
 
-            <div className="w-full max-w-[1800px] grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-x-28 gap-y-20 mt-6 mb-24">
+            <div className="w-full max-w-[1800px] grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-x-20 gap-y-20 mt-6 mb-24">
                 {tiles.map((t) => {
                     const isSelected = selectedId === t.id
                     return (
@@ -122,7 +122,7 @@ export default function WriteBackScreen() {
                                     }
                                 }}  
                                 className={
-                                    "focus:outline-none w-full max-w-[520px] sm:max-w-[640px] lg:max-w-[720px] xl:max-w-[900px] 2xl:max-w-[1100px]" + 
+                                    "focus:outline-none w-full max-w-[580px] sm:max-w-[740px] lg:max-w-[880px] xl:max-w-[1000px] 2xl:max-w-[1200px]" + 
                                     "transform transition-opacity transition-transform duration-700 ease-out " +
                                     (tilesVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4")
                                 }
@@ -149,12 +149,12 @@ export default function WriteBackScreen() {
                                     {isSelected && (
                                         <div className="w-full h-full bg-black/6 flex items-end justify-center" />
                                     )}
-                                    <div className="absolute inset-4 rounded-md bg-[#EDE8DE]/80 shadow-inner flex items-center justify-center">
+                                    <div className="absolute inset-4 rounded-md bg-[#EDE8DE]/80 shadow-inner flex items-center justify-center overflow-hidden">
                                         {t.image ? (
                                         <img
                                             src={t.image}
                                             alt="illustration"
-                                            className="max-h-[78%] max-w-[92%] object-contain pointer-events-none select-none"
+                                            className="w-full h-full object-contain pointer-events-none select-none -rotate-90 origin-center scale-[1.9]"
                                             draggable={false}
                                         />
                                         ) : (
