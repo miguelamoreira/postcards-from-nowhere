@@ -23,7 +23,7 @@ export default function PostcardFront({ postcardBg = "../assets/bg/postcard.svg"
                     backgroundPosition: "center",
                 }}
             >
-                <div className="absolute inset-[5%] rounded-mdshadow-inner flex items-center justify-center">
+                <div className="absolute inset-[5%] sm:inset-[5%] rounded-md shadow-inner flex items-center justify-center">
                     {image && !videoError ? (
                         <>
                             {!videoLoaded && (

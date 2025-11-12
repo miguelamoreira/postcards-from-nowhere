@@ -5,9 +5,10 @@ interface ButtonProps {
     onClick?: () => void;
     variant?: "primary" | "secondary";
     state?: "default" | "disabled";
+    className?: string;
 }
 
-export default function Button({ text, onClick, variant="primary", state="default"}: ButtonProps) {
+export default function Button({ text, onClick, variant="primary", state="default", className}: ButtonProps) {
     const [buttonState, setButtonState] = useState<"default" | "hover" | "active" | "disabled">(state)
     const isDisabled = buttonState === "disabled"
     let backgroundImage = "";
@@ -45,7 +46,7 @@ export default function Button({ text, onClick, variant="primary", state="defaul
         <button 
             onClick={isDisabled ? undefined : onClick}
             disabled={isDisabled}
-            className="px-8 py-3 text-lg font-monospace transition-all point-cursor"
+            className={`px-8 py-3 text-lg font-monospace transition-all point-cursor ${className}`}
             style={{
                 backgroundImage,
                 backgroundSize: "cover",

@@ -205,7 +205,7 @@ export default function PersonalPostcard({ initialIllustration, onCancel, onSent
             ];
 
             const pdf = new jsPDF({
-            orientation: "portrait", // keep page portrait
+            orientation: "portrait",
             unit: "pt",
             format: "a4"
             });
@@ -215,7 +215,6 @@ export default function PersonalPostcard({ initialIllustration, onCancel, onSent
 
             const pageW = pdf.internal.pageSize.getWidth();
             const pageH = pdf.internal.pageSize.getHeight();
-            // vertical layout: top and bottom slots
             const halfPageH = (pageH - 3 * pdfMargin) / 2;
 
             for (let i = 0; i < nodes.length; i++) {
@@ -292,12 +291,12 @@ export default function PersonalPostcard({ initialIllustration, onCancel, onSent
 
                 <div
                     className={
-                        "relative rounded-lg shadow-2xl overflow-hidden mb-8 w-full" +
+                        "relative rounded-lg shadow-2xl overflow-hidden mb-8" +
                         "transform transition-opacity transition-transform duration-700 ease-out " +
                         (cardVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4")
                     }
                     style={{
-                        width: "clamp(420px, 92vw, 900px)",
+                        width: "clamp(380px, 90vw, 900px)",
                         aspectRatio: "1166 / 656",
                         backgroundImage: `url(${postcardBg})`,
                         backgroundSize: "cover",
@@ -306,14 +305,17 @@ export default function PersonalPostcard({ initialIllustration, onCancel, onSent
                     aria-hidden={!cardVisible}
                 >
                     <div
-                        className="absolute inset-6 rounded-sm flex items-stretch"
-                        style={{ background: "transparent" }}
+                        className="absolute inset-5 rounded-sm flex items-stretch"
+                        style={{
+                            background: "transparent",
+                            minHeight: window.innerWidth <= 380 ? "500px" : "auto",
+                        }}
                     >
                         <textarea
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             placeholder="Write your message"
-                            className="w-full h-full resize-none font-neucha text-[#404040] bg-[#EDE8DE]/95 rounded-sm outline-none p-6"
+                            className="w-full h-full resize-none font-neucha text-[#404040] bg-[#EDE8DE]/95 rounded-sm outline-none p-4"
                             style={{
                                 fontSize: 18,
                                 lineHeight: "1.6",
@@ -328,9 +330,9 @@ export default function PersonalPostcard({ initialIllustration, onCancel, onSent
 
                 <div 
                     className={
-                        "flex items-center gap-8" +
-                        "transform transition-opacity transition-transform duration-700 ease-out " +
-                        (buttonsVisible ? "opacity-100 translate-y-0 gap-6" : "opacity-0 translate-y-4")
+                        "flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 mt-16 sm:mt-12" +
+                        " transform transition-opacity transition-transform duration-700 ease-out " +
+                        (buttonsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4")
                     }
                     aria-hidden={!buttonsVisible}
                 >

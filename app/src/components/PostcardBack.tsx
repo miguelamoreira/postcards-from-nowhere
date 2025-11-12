@@ -96,7 +96,7 @@ export default function PostcardBack({ userName, location = "-", text = "", post
                 />
             
                 {/* content */}
-                <div className="absolute inset-8 flex flex-col lg:grid lg:grid-cols-[1fr_360px] gap-6 overflow-hidden">
+                <div className="absolute inset-4 sm:inset-6 md:inset-8 flex flex-col lg:grid lg:grid-cols-[1fr_360px] gap-4 sm:gap-6 overflow-hidden">
                     {/* LEFT (message area) */}
                     <div className="relative rounded-sm p-2 flex flex-col">
                         <div className="mb-4">

@@ -472,9 +472,15 @@ export default function PostcardScreen() {
         width: { duration: 0.45, easing: [0.2, 0.8, 0.2, 1] },
     };
 
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+
     const flipperAnimate = reduceMotion
         ? { rotateY: rotateTarget }
-        : { rotateY: rotateTarget, height: surfaceHeight ? `${surfaceHeight}px` : "auto", width: targetWidth };
+        : {
+            rotateY: rotateTarget,
+            height: surfaceHeight ? `${surfaceHeight}px` : "auto",
+            width: isMobile ? "92vw" : targetWidth,   // wider on small screens
+        };
 
     const faceCommon: React.CSSProperties = {
         backfaceVisibility: "hidden",
@@ -562,14 +568,14 @@ export default function PostcardScreen() {
 
     return (
         <motion.div
-            className="sm:mt-6 lg:mt-6 2xl:mt-12 bg-[#404040] flex items-center justify-center px-4 sm:px-8 relative overflow-hidden"
+            className="sm:mt-6 lg:mt-6 2xl:mt-12 bg-[#404040] flex items-center justify-center relative overflow-hidden"
             initial={reduceMotion ? { opacity: 0 } : "initial"}
             animate={reduceMotion ? { opacity: 1 } : "in"}
             exit={reduceMotion ? { opacity: 0 } : "out"}
             variants={pageVariants}
             transition={{ duration: 0.45 }}
         >
-            <div className="w-full max-w-6xl mx-auto px-4 sm:px-8 flex flex-col items-center gap-6">
+            <div className="w-full max-w-6xl mx-auto px-2 sm:px-8 flex flex-col items-center gap-4 sm:gap-6 grow">
                 <div
                 aria-hidden
                 style={{
@@ -666,17 +672,22 @@ export default function PostcardScreen() {
                     className={`
                         relative z-20 flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10
                         ${isFrontVisible
-                        ? "mt-0 sm:mt-8 md:mt-10 lg:mt-12 xl:mt-16 2xl:mt-0"
-                        : "mt-0 sm:mt-6 md:mt-6 lg:mt-8 xl:mt-8 2xl:mt-0" 
+                        ? "mt-6 sm:mt-8 md:mt-10 lg:mt-12 xl:mt-16 2xl:mt-0"
+                        : "mt-6 sm:mt-6 md:mt-6 lg:mt-8 xl:mt-8 2xl:mt-0"
                         }
                     `}
+                    style={{
+                        marginTop: isMobile ? "12rem" : undefined,
+                        marginLeft: isMobile ? "4rem" : undefined,
+                        position: isMobile ? "relative" : "static",
+                    }}
                 >
                     {canFlip && <Button onClick={onFlipClick} variant="secondary" text={isFrontVisible ? "Flip to back" : "Flip to front"} />}
-                    <Button text="Continue" onClick={handleContinue} variant="primary" />
+                    <Button text="Continue" onClick={handleContinue} variant="primary" className="w-full sm:w-auto text-base sm:text-lg py-3 sm:py-2"/>
                 </div>
             </div>
 
-            <div className="absolute left-4 bottom-6 z-50">
+            <div className="absolute left-4 bottom-10 sm:bottom-6 z-50">
                 <div className="flex items-center gap-3">
                     {!audioUnlocked ? (
                     <button
